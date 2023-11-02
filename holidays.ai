@@ -1,0 +1,210 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[22]:
+
+
+import csv
+
+
+data = [
+    ["1 Jan", "Sun", "New Year's Day"],
+    ["20 Apr", "Thu", "Eid al-Fitr Holiday"],
+    ["21 Apr", "Fri", "Eid al-Fitr"],
+    ["22 Apr", "Sat", "Eid al-Fitr Holiday"],
+    ["23 Apr", "Sun", "Eid al-Fitr Holiday"],
+    ["27 Jun", "Tue", "Arafat Day"],
+    ["28 Jun", "Wed", "Eid al-Adha"],
+    ["29 Jun", "Thu", "Eid al-Adha Holiday"],
+    ["30 Jun", "Fri", "Eid al-Adha Holiday"],
+    ["21 Jul", "Fri", "Islamic New Year"],
+    ["28 Sep", "Fri", "Prophet Muhammad's Birthday"],
+    ["5 Dec", "Fri", "Commemoration Day"],
+    ["7 Dec", "Sat", "National Day"],
+    ["9 Dec", "Sun", "National Day Holiday"]
+]
+
+
+file_path = 'holidays.csv'
+
+# Saving the data into a CSV file
+with open(file_path, 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Date', 'Day', 'Holiday'])
+    writer.writerows(data)
+
+print(f"Data has been successfully saved to {file_path}.")
+
+
+# In[23]:
+
+
+get_ipython().system('pip install openai')
+
+
+# In[10]:
+
+
+get_ipython().system('pip install pandas ')
+
+
+# In[20]:
+
+
+import site; site.getsitepackages()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# In[24]:
+
+
+
+get_ipython().system('pip install pyyaml --upgrade')
+
+
+# In[25]:
+
+
+get_ipython().system('pip install typing-extensions==3.10.0.2')
+
+
+# In[26]:
+
+
+get_ipython().system('pip install numpy --upgrade')
+
+
+# In[27]:
+
+
+get_ipython().system('pip install transformers -U')
+
+
+# In[28]:
+
+
+import openai
+
+
+openai.api_key = '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'
+
+# Define the prompt
+prompt = "Ask a question about upcoming holidays:"
+
+# Send the prompt to the OpenAI model for completion
+response = openai.Completion.create(
+  engine="davinci",
+  prompt=prompt,
+  max_tokens=100
+)
+
+# Display the response from the OpenAI model
+print("Response from OpenAI model:")
+print(response.choices[0].text.strip())
+
+
+# In[33]:
+
+
+import pandas as pd
+
+
+file_path = 'holidays.csv'
+
+
+df = pd.read_csv(file_path)
+
+
+print("Loaded Data from CSV:")
+print(df)
+
+
+#vector_index = df.to_numpy()
+
+
+#print("\nVector Index:")
+#print(vector_index)
+
+
+# In[34]:
+
+
+
+basic_prompt = "Ask me about the holidays. I can provide information about upcoming holidays and their dates."
+
+# Creating a list to retain the conversation history
+conversation_history = []
+
+# Sample conversation history
+conversation_history.append({"user": "What holidays are coming up?", "bot": "I can tell you about New Year's Day, Eid al-Fitr, Arafat Day, Eid al-Adha, Islamic New Year, Prophet Muhammad's Birthday, Commemoration Day, National Day, and more."})
+conversation_history.append({"user": "Can you give me the dates for Eid al-Adha?", "bot": "Eid al-Adha is on 28th June, and it is followed by Eid al-Adha Holiday on 29th and 30th June."})
+
+# Displaying the basic prompt and conversation history
+print("Basic Prompt:")
+print(basic_prompt)
+
+print("\nConversation History:")
+for index, entry in enumerate(conversation_history, start=1):
+    print(f"{index}. User: {entry['user']}")
+    print(f"   Bot: {entry['bot']}")
+
+
+# In[32]:
+
+
+import pandas as pd
+from transformers import pipeline
+
+# Load the saved data
+file_path = 'holidays.csv'
+df = pd.read_csv(file_path)
+
+# Establish a basic prompt
+basic_prompt = "Ask me about the holidays. I can provide information about upcoming holidays and their dates."
+
+# Create a list to retain the conversation history
+conversation_history = []
+
+# Initialize the ChatOpenAI model
+qa_pipeline = pipeline("question-answering")
+
+# Function to handle questions
+def ask_question(question):
+    conversation_history.append({'question': question})
+    answer = qa_pipeline(question=question, context=df.to_string())
+    conversation_history[-1]['answer'] = answer
+    return answer['answer']
+
+# Example usage
+question = "What holidays are observed on 28 Jun?"
+answer = ask_question(question)
+print(f"Question: {question}")
+print(f"Answer: {answer}")
+
+# Display basic prompt and conversation history
+print("\nBasic Prompt:")
+print(basic_prompt)
+
+print("\nConversation History:")
+for index, entry in enumerate(conversation_history, start=1):
+    print(f"{index}. User: {entry['question']}")
+    print(f"   Bot: {entry['answer']}")
+
+
+
+
+
+
+
+
